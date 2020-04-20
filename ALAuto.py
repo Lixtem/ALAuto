@@ -3,6 +3,7 @@ import re
 import traceback
 import argparse
 from modules.combat import CombatModule
+from modules.exercise import ExerciseModule
 from modules.commission import CommissionModule
 from modules.enhancement import EnhancementModule
 from modules.mission import MissionModule
@@ -22,6 +23,7 @@ class ALAuto(object):
     modules = {
         'updates': None,
         'combat': None,
+        'exercise': None,
         'commissions': None,
         'enhancement': None,
         'missions': None,
@@ -61,6 +63,8 @@ class ALAuto(object):
             self.modules['research'] = ResearchModule(self.config, self.stats)
         if self.config.events['enabled']:
             self.modules['event'] = EventModule(self.config, self.stats)
+        if self.config.exercise['enabled']:
+            self.modules['exercise'] = ExerciseModule(self.config, self.stats)
         self.print_stats_check = True
         self.next_combat = datetime.now()
 
@@ -147,6 +151,12 @@ class ALAuto(object):
         if self.modules['research']:
             self.modules['research'].research_logic_wrapper()
 
+    def run_exercise_cycle(self):
+        """Method to run the exercise cycle.
+        """
+        if self.modules['exercise']:
+            self.modules['exercise'].exercise_logic_wrapper()
+            
     def run_event_cycle(self):
         """Method to run the event cycle
         """
@@ -226,6 +236,8 @@ try:
         if script.should_sortie():
             script.run_sortie_cycle()
             script.print_cycle_stats()
+        if config.exercise['enabled']:
+            script.run_exercise_cycle()
         else:
             Logger.log_msg("Nothing to do, will check again in a few minutes.")
             Utils.script_sleep(300)

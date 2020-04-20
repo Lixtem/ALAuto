@@ -103,7 +103,7 @@ class CombatModule(object):
         # get to map
         map_region = self.reach_map()
         Utils.touch_randomly(map_region)
-
+        
         while True:
             Utils.wait_update_screen()
 

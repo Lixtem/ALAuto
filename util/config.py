@@ -22,6 +22,7 @@ class Config(object):
         self.initialized = False
         self.updates = {'enabled': False}
         self.combat = {'enabled': False}
+        self.exercise = {'enabled': False}
         self.commissions = {'enabled': False}
         self.enhancement = {'enabled': False}
         self.missions = {'enabled': False}
@@ -46,6 +47,9 @@ class Config(object):
 
         if config.getboolean('Combat', 'Enabled'):
             self._read_combat(config)
+
+        if config.getboolean('Exercise', 'Enabled'):
+            self._read_exercise(config)
 
         if config.getboolean('Headquarters', 'Dorm') or config.getboolean('Headquarters', 'Academy'):
             self._read_headquarters(config)
@@ -115,6 +119,13 @@ class Config(object):
         self.combat['hide_subs_hunting_range'] = config.getboolean('Combat', 'HideSubsHuntingRange')
         self.combat['small_boss_icon'] = config.getboolean('Combat', 'SmallBossIcon')
         self.combat['siren_elites'] = config.getboolean('Combat', 'SirenElites')
+
+    def _read_exercise(self, config):
+        """Method to parse the Exercise settings of the passed in config.
+        Args:
+            config (ConfigParser): ConfigParser instance
+        """
+        self.exercise['enabled'] = True
 
     def _read_headquarters(self, config):
         """Method to parse the Headquarters settings passed in config.
@@ -195,7 +206,7 @@ class Config(object):
                 Logger.log_error("Invalid server assets configured. Only {} and {} are supported.".format(', '.join(valid_servers[:-1]), valid_servers[-1]))
             self.ok = False
 
-        if not self.combat['enabled'] and not self.commissions['enabled'] and not self.enhancement['enabled'] \
+        if not self.combat['enabled'] and not self.exercise['enabled'] and not self.commissions['enabled'] and not self.enhancement['enabled'] \
            and not self.missions['enabled'] and not self.retirement['enabled'] and not self.research['enabled'] and not self.events['enabled']:
             Logger.log_error("All modules are disabled, consider checking your config.")
             self.ok = False
